@@ -17,7 +17,7 @@
 
 APPNAME = Entropy
 TARGET_ID = 0x31100002 #Nano S
-ICON_FILE = icon_bw.gif
+ICON_DATA = 0100ffffff00000000000000000c3184231009200540038811fc3f48132005100984230c3100000000
 APP_LOAD_PARAMS=--appFlags 0x40
 # max length of derivation path
 MAX_BIP32_PATH=5
@@ -133,7 +133,7 @@ log = $(if $(strip $(VERBOSE)),$1,@$1)
 default: prepare bin/$(PROG)
 
 load: 
-	python -m ledgerblue.loadApp --targetId $(TARGET_ID) --apdu --fileName bin/$(PROG).hex --appName $(APPNAME) --icon `python icon.py 16 16 $(ICON_FILE) hexbitmaponly` $(APP_LOAD_PARAMS)
+	python -m ledgerblue.loadApp --targetId $(TARGET_ID) --apdu --fileName bin/$(PROG).hex --appName $(APPNAME) --icon $(ICON_DATA)  $(APP_LOAD_PARAMS)
 
 delete:
 	python -m ledgerblue.deleteApp --targetId $(TARGET_ID) --appName $(APPNAME)

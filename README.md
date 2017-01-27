@@ -71,6 +71,6 @@ os headers: https://github.com/LedgerHQ/blue-secure-sdk/blob/master/include/os.h
 * create 16x16 bw gif
 * execute `python icon.py 16 16 <icon name> hexbitmaponly`
 * local icon.py is modified by me to run on python3
-* command above is a part of makefile
+* replace in --icon for load target
 * when drawing icon leave 2px frame around your stuff
 
