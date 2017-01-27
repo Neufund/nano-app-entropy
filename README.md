@@ -8,14 +8,14 @@
 ## how to use
 
 * run entropy app
-* every app has can set USB device data (can pretend to be any device)
+* every app  can set USB device data (can pretend to be any device)
 * wait for usb to settle, here is how it looks to lsusb `Bus 001 Device 049: ID 2c97:0001`
-* run demo.py and do what it says
+* run test.py and do what it says
 * it runs inside container if you map usb correctly. if you run container in VM then you need to filter proper USB device into VM
 
 ```
 docker build . -t neufund/nano
-docker run -it --rm --privileged -v /dev/bus/usb:/dev/bus/usb neufund/nano python demo.py
+docker run -it --rm --privileged -v /dev/bus/usb:/dev/bus/usb neufund/nano python test.py
 ```
 
 ## install development components

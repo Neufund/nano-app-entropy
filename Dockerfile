@@ -9,5 +9,5 @@ WORKDIR /usr/src/app
 COPY requirements.txt /usr/src/app/
 ENV SECP_BUNDLED_EXPERIMENTAL=1
 RUN pip install --no-cache-dir -r requirements.txt
-COPY demo.py demo.py
+COPY test.py test.py
 RUN rm requirements.txt
