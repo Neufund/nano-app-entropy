@@ -9,26 +9,42 @@ import time
 from functools import wraps
 
 
+# key parts to be returned as defined in main.c
 key_part_priv_key = 1
 key_part_pub_key = 2
 key_part_chaincode = 4
 
+
 def parse_bip32_path(path):
+    """
+    parse derivation path as a array of unsigned 32bit ints, hardening specified as '
+    :param path: path to parse
+    :return: parsed path and depth tuple
+    """
     result = b''
     elements = path.split('/')
     for pathElement in elements:
         element = pathElement.split('\'')
+        # little endian! why Ledger used big endian and converted in main.c???
         if len(element) == 1:
-            result = result + struct.pack("<I", int(element[0]))  # little endian! why they've used big endian and converted in main.c???
+            result = result + struct.pack("<I", int(element[0]))
         else:
             result = result + struct.pack("<I", 0x80000000 | int(element[0]))
     return result, len(elements)
 
 
 def nano_get_key(path, key_mask, debug=False):
-    # with getDongle(debug) as dongle: #  Dongle is not managed resource, a pity..
+    """
+    derive and obtain master key from nano
+    :param path: derivation path
+    :param key_mask: which parts of key to return
+    :param debug: dump transission in hex
+    :return: a tuple (uncompressed pub key, priv key, chaincode) as specified in mask, if not specidied 0x0 string
+    is returned
+    """
     dongle = None
     try:
+        # todo: make dogle a resource managed with "with"
         dongle = getDongle(debug)
         parsed, elements = parse_bip32_path(path)
         print('confirm on device...')
@@ -40,14 +56,26 @@ def nano_get_key(path, key_mask, debug=False):
             dongle.close()
 
 
-def nano_get_pub_master_key(path, netcode):
+def nano_get_pub_wallet(path, netcode='BTC'):
+    """
+    get bip32 wallet with derivable public master key
+    :param path: derivation path
+    :param netcode: BTC for main net
+    :return: wallet string in xpub.... format
+    """
     _, depth = parse_bip32_path(path)
     public_key, _, chain_code = nano_get_key(path, key_part_pub_key + key_part_chaincode)
     wallet = BIP32Node(netcode, chain_code, depth, public_pair=Key.from_sec(public_key, netcode).public_pair())
     return wallet.wallet_key(as_private=False)
 
 
-def nano_get_priv_master_key(path, netcode):
+def nano_get_priv_wallet(path, netcode='BTC'):
+    """
+    get bip32 wallet with derivable private master key
+    :param path: derivation path
+    :param netcode: BTC for main net
+    :return: wallet string in xprv.... format
+    """
     _, depth = parse_bip32_path(path)
     _, private_key, chain_code = nano_get_key(path, key_part_priv_key + key_part_chaincode)
     bip32_wallet = BIP32Node(netcode, chain_code, depth, secret_exponent=encoding.from_bytes_32(private_key))
@@ -62,6 +90,13 @@ def nano_is_present():
 
 
 def nanohandler(f):
+    """
+    safe wrapper for functions exchanging data with nano entropy app
+    handles all interesting exceptional cases
+    please note that entropy requires admin to confirm derivation so handler works in interactive mode
+    as a precaution it will not exit until you disconnect nano from usb to prevent leaving nano unlocked and connected
+    :param f: function to wrap
+    """
     @wraps(f)
     def _wrap(*args, **kwargs):
         try:
