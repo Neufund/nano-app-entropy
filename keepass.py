@@ -20,3 +20,5 @@ except Exception as e:
     exit()
 
 entropy_to_clip(input('your keepass file derivation path:'))
+pyperclip.copy('')
+
