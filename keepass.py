@@ -9,7 +9,7 @@ def entropy_to_clip(path):
     compPK = Key.from_sec(public_key)
     entropy = compPK.sec(use_uncompressed=False)[1:] + chain_code
     pyperclip.copy(entropy.hex())
-    print('entropy in clipboard')
+    print('entropy in clipboard and will be erased when you disconnect nano')
 
 try:
     pyperclip.copy('test')
