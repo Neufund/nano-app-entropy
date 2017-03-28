@@ -50,6 +50,10 @@ export BOLOS_SDK=/home/rudolfix/src/nano/nanos-secure-sdk
 
 
 ## how to build and deploy
+
+* make sure you use correct firmware tag in nanos-secure-sdk
+* make sure you use correct version of compilers in blue-devenv for your firmware version
+
 token.hex is included and may be deployed without main.c compilation
 check Makefile for load and delete targets
 

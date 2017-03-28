@@ -49,7 +49,11 @@ CONFIG_PRODUCTIONS := bin/$(PROG)
 
 SOURCE_PATH   := src $(BOLOS_SDK)/src $(dir $(shell find $(BOLOS_SDK)/lib_stusb* | grep "\.c$$")) $(dir $(shell find $(BOLOS_SDK)/lib_bluenrg* | grep "\.c$$"))
 SOURCE_FILES  := $(foreach path, $(SOURCE_PATH),$(shell find $(path) | grep "\.c$$") )
-INCLUDES_PATH := src_usb $(dir $(shell find $(BOLOS_SDK)/lib_stusb* | grep "\.h$$")) $(dir $(shell find $(BOLOS_SDK)/lib_bluenrg* | grep "\.h$$")) include src $(BOLOS_SDK)/include $(BOLOS_SDK)/include/arm
+INCLUDES_PATH := src_usb $(dir $(shell find $(BOLOS_SDK)/lib_stusb* | grep "\.h$$")) include src $(BOLOS_SDK)/include $(BOLOS_SDK)/include/arm
+
+#firmware 1.2 - uncomment below and comment includes above
+#INCLUDES_PATH := src_usb $(dir $(shell find $(BOLOS_SDK)/lib_stusb* | grep "\.h$$")) $(dir $(shell find $(BOLOS_SDK)/lib_bluenrg* | grep "\.h$$")) include src $(BOLOS_SDK)/include $(BOLOS_SDK)/include/arm
+#DEFINES   += HAVE_BLE HAVE_BLUENRG HCI_READ_PACKET_NUM_MAX=3 BLUENRG_MS HCI_READ_PACKET_SIZE=72
 
 ### platform definitions
 DEFINES := ST31 gcc __IO=volatile
@@ -57,7 +61,6 @@ DEFINES := ST31 gcc __IO=volatile
 DEFINES   += OS_IO_SEPROXYHAL IO_SEPROXYHAL_BUFFER_SIZE_B=300
 DEFINES   += HAVE_BAGL HAVE_SPRINTF
 DEFINES   += HAVE_IO_USB HAVE_L4_USBLIB IO_USB_MAX_ENDPOINTS=6 IO_HID_EP_LENGTH=64 HAVE_USB_APDU
-DEFINES   += HAVE_BLE HAVE_BLUENRG HCI_READ_PACKET_NUM_MAX=3 BLUENRG_MS HCI_READ_PACKET_SIZE=72
 #DEFINES  += PRINTF=screen_printf
 DEFINES   += PRINTF\(...\)=
 DEFINES   += UNUSED\(x\)=\(void\)x
