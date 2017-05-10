@@ -1,3 +1,13 @@
+# nano ledger S entropy app
+
+This is an app that provides a piece of entropy from secret stored on your nano ledger. this entropy can be used for example to:
+
+* deterministically derive pub/priv key pair that you can use to transact on ethereum/bitcoin networks
+* a piece of entropy that you can use as your keepass password
+
+and in all other cases where you do not want to store your secret values and you are fine with keeping them in memory for shorter or longer time.
+please note that signing/verification is not done on nano itself.
+
 ## how it works
 
 * a node secret is derived from master secret (expoent and chaincode parts) for derivation path provided
@@ -18,11 +28,9 @@ docker build . -t neufund/nano
 docker run -it --rm --privileged -v /dev/bus/usb:/dev/bus/usb neufund/nano python test.py
 ```
 
-## install development components
-start here:
-https://github.com/LedgerHQ/ledger-nano-s
+## install runtime components
 
-when cloning Nano SDK, checkout tag that corresponds to your Nano's firmware
+how to run entropy app clients?
 
 ### make virtualenv with ledger library
 ```
@@ -33,9 +41,19 @@ activate venv nano
 
 ### install dependencies
 install secp256k1 as described here https://github.com/LedgerHQ/blue-loader-python
-for more details check Dockerfile, if you install on ubuntu replace following library names
+for more details check Dockerfile, if you install on ubuntu replace following library names (container builds on alpine)
 libusb-dev == libusb-1.0-0.dev
 eudev-dev == libudev-dev
+
+we also were successfull with running nano client from raspberry pi 3
+
+## build environment
+
+start here:
+https://github.com/LedgerHQ/ledger-nano-s
+
+when cloning Nano SDK, checkout tag that corresponds to your Nano's firmware
+
 
 ### prerequisites to gcc and clang building
 There is a docker container with customized gcc and clang compilers, if not install following dependency
