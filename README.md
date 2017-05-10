@@ -28,6 +28,10 @@ docker build . -t neufund/nano
 docker run -it --rm --privileged -v /dev/bus/usb:/dev/bus/usb neufund/nano python test.py
 ```
 
+## writing own entropy app clients
+
+`nano_utils/nano.py` contains all you need also see examples: `keepass.py` and `test.py`
+
 ## install runtime components
 
 how to run entropy app clients?
