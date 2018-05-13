@@ -2,3 +2,4 @@ dep/
 debug/
 obj/
 *.elf
+__pycache__
