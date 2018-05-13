@@ -1,5 +1,6 @@
 from ledgerblue.comm import getDongle
 from ledgerblue.commException import CommException
+from eth_utils import keccak, to_checksum_address, big_endian_to_int, int_to_big_endian
 from pycoin.key.BIP32Node import BIP32Node
 from pycoin.key import Key
 from pycoin import encoding
@@ -14,6 +15,31 @@ key_part_priv_key = 1
 key_part_pub_key = 2
 key_part_chaincode = 4
 
+
+def pycoin_to_pub(key):
+    x, y = key.public_pair()
+    return int_to_big_endian(x) + int_to_big_endian(y)
+    
+    
+def pycoin_to_priv(key):
+    assert(key.is_private())
+    return int_to_big_endian(key.secret_exponent())
+    
+
+def pub_to_address(pubkey: bytes) -> str:
+    """
+    Gets checksummed Ethereum address from public key
+    :param pubkey: 64 bytes public key
+    :return: Ethereum address string
+    """
+    return to_checksum_address(keccak(pubkey[0:])[12:])
+
+def load_priv_wallet(wallet_key):
+    """
+    create private BIP32 wallet from private master key
+    :param wallet_key: contains private wallet key prefixed 'tprv'. check README.md
+    """
+    return BIP32Node.BIP32Node.from_wallet_key(wallet_key)
 
 def parse_bip32_path(path):
     """
@@ -105,6 +131,7 @@ def nanohandler(f):
             print('remove nano to continue')
             while nano_is_present():
                 time.sleep(0.3)
+            # input("Press Enter to continue...")
             return r
         except CommException as comm:
             if comm.message == 'No dongle found':
